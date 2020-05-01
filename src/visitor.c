@@ -1,4 +1,5 @@
 #include "include/visitor.h"
+#include "include/scope.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -33,6 +34,7 @@ AST_T* visitor_visit(visitor_T* visitor, AST_T* node)
     switch (node->type)
     {
         case AST_VARIABLE_DEFINITION: return visitor_visit_variable_definition(visitor, node); break;
+        case AST_FUNCTION_DEFINITION: return visitor_visit_function_definition(visitor, node); break;
         case AST_VARIABLE: return visitor_visit_variable(visitor, node); break;
         case AST_FUNCTION_CALL: return visitor_visit_function_call(visitor, node); break;
         case AST_STRING: return visitor_visit_string(visitor, node); break;
@@ -67,6 +69,16 @@ AST_T* visitor_visit_variable_definition(visitor_T* visitor, AST_T* node)
     return node;
 }
 
+AST_T* visitor_visit_function_definition(visitor_T* visitor, AST_T* node)
+{
+    scope_add_function_definition(
+        node->scope,
+        node        
+    );
+
+    return node;
+}
+
 AST_T* visitor_visit_variable(visitor_T* visitor, AST_T* node)
 {
     for (int i = 0; i < visitor->variable_definitions_size; i++)
@@ -89,6 +101,14 @@ AST_T* visitor_visit_function_call(visitor_T* visitor, AST_T* node)
     {
         return builtin_function_print(visitor, node->function_call_arguments, node->function_call_arguments_size);
     }
+
+    AST_T* fdef = scope_get_function_definition(
+        node->scope,
+        node->function_call_name
+    );
+
+    if (fdef != (void*)0)
+        return visitor_visit(visitor, fdef->function_definition_body);
 
     printf("Undefined method `%s`\n", node->function_call_name);
     exit(1);
