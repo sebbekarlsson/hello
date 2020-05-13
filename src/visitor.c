@@ -91,7 +91,7 @@ AST_T* visitor_visit_variable(visitor_T* visitor, AST_T* node)
         }
     }
 
-    printf("Undefined variable `%s\n`", node->variable_name);
+    printf("Undefined variable `%s`\n", node->variable_name);
     return node;
 }
 
