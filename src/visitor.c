@@ -33,24 +33,22 @@ AST_T* visitor_visit(visitor_T* visitor, AST_T* node)
 {
     switch (node->type)
     {
-        case AST_VARIABLE_DEFINITION: return visitor_visit_variable_definition(visitor, node); break;
-        case AST_FUNCTION_DEFINITION: return visitor_visit_function_definition(visitor, node); break;
-        case AST_VARIABLE: return visitor_visit_variable(visitor, node); break;
-        case AST_FUNCTION_CALL: return visitor_visit_function_call(visitor, node); break;
-        case AST_STRING: return visitor_visit_string(visitor, node); break;
-        case AST_COMPOUND: return visitor_visit_compound(visitor, node); break;
-        case AST_NOOP: return node; break;
+        case AST_VARIABLE_DEFINITION: return visitor_visit_variable_definition(visitor, node);
+        case AST_FUNCTION_DEFINITION: return visitor_visit_function_definition(visitor, node);
+        case AST_VARIABLE: return visitor_visit_variable(visitor, node);
+        case AST_FUNCTION_CALL: return visitor_visit_function_call(visitor, node);
+        case AST_STRING: return visitor_visit_string(visitor, node);
+        case AST_COMPOUND: return visitor_visit_compound(visitor, node);
+        case AST_NOOP: return node;
     }
 
     printf("Uncaught statement of type `%d`\n", node->type);
     exit(1);
-
-    return init_ast(AST_NOOP);
 }
 
 AST_T* visitor_visit_variable_definition(visitor_T* visitor, AST_T* node)
 {
-    if (visitor->variable_definitions == (void*) 0)
+    if (visitor->variable_definitions == NULL)
     {
         visitor->variable_definitions = calloc(1, sizeof(struct AST_STRUCT*));
         visitor->variable_definitions[0] = node;
