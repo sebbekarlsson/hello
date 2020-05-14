@@ -54,12 +54,14 @@ AST_T* parser_parse_statements(parser_T* parser, scope_T* scope)
     AST_T* compound = init_ast(AST_COMPOUND);
     compound->scope = scope;
 
-    while(parser->current_token->type != TOKEN_EOF){
+    while (parser->current_token->type != TOKEN_EOF)
+    {
         compound->compound_size += 1;
-        compound->compound_value = realloc(
-            compound->compound_value,
-            compound->compound_size * sizeof(struct AST_STRUCT*)
-        );
+        compound->compound_value =
+            realloc(
+                    compound->compound_value,
+                    compound->compound_size * sizeof(struct AST_STRUCT*)
+                   );
 
         compound->compound_value[compound->compound_size-1] = parser_parse_statement(parser, scope);
         compound->compound_value[compound->compound_size-1]->scope = scope;
@@ -95,15 +97,17 @@ AST_T* parser_parse_function_call(parser_T* parser, scope_T* scope)
 
     function_call->function_call_name = parser->prev_token->value;
 
-    while(parser->current_token->type == TOKEN_LPAREN || parser->current_token->type == TOKEN_COMMA){
+    while (parser->current_token->type == TOKEN_LPAREN || parser->current_token->type == TOKEN_COMMA)
+    {
         // eat whatever is there, it has to be a LPAREN or a COMMA
         parser_eat(parser, parser->current_token->type);
 
         function_call->function_call_arguments_size += 1;
-        function_call->function_call_arguments = realloc(
-            function_call->function_call_arguments,
-            function_call->function_call_arguments_size * sizeof(struct AST_STRUCT*)
-        );
+        function_call->function_call_arguments =
+            realloc(
+                    function_call->function_call_arguments,
+                    function_call->function_call_arguments_size * sizeof(struct AST_STRUCT*)
+                   );
         function_call->function_call_arguments[function_call->function_call_arguments_size-1]=
             parser_parse_expr(parser, scope);
     }
