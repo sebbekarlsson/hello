@@ -1,4 +1,3 @@
-#include<stdlib.h>
 #include "include/AST.h"
 
 
