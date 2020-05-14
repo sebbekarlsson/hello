@@ -53,28 +53,18 @@ AST_T* parser_parse_statements(parser_T* parser, scope_T* scope)
 {
     AST_T* compound = init_ast(AST_COMPOUND);
     compound->scope = scope;
-    compound->compound_value = calloc(1, sizeof(struct AST_STRUCT*));
 
-    AST_T* ast_statement = parser_parse_statement(parser, scope);
-    ast_statement->scope = scope;
-    compound->compound_value[0] = ast_statement;
-    compound->compound_size += 1;
+    while(parser->current_token->type != TOKEN_EOF){
+        compound->compound_size += 1;
+        compound->compound_value = realloc(
+            compound->compound_value,
+            compound->compound_size * sizeof(struct AST_STRUCT*)
+        );
 
-    while (parser->current_token->type == TOKEN_SEMI)
-    {
+        compound->compound_value[compound->compound_size-1] = parser_parse_statement(parser, scope);
+        compound->compound_value[compound->compound_size-1]->scope = scope;
+
         parser_eat(parser, TOKEN_SEMI);
-
-        AST_T* ast_statement = parser_parse_statement(parser, scope);
-
-        if (ast_statement)
-        {
-            compound->compound_size += 1;
-            compound->compound_value = realloc(
-                compound->compound_value,
-                compound->compound_size * sizeof(struct AST_STRUCT*)
-            );
-            compound->compound_value[compound->compound_size-1] = ast_statement;
-        }
     }
 
     return compound;
