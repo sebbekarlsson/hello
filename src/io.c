@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 char* get_file_contents(const char* filepath)
 {
-    char* buffer = 0;
+    char* buffer = NULL;
     long length;
 
     FILE* f = fopen(filepath, "rb");
@@ -16,10 +15,10 @@ char* get_file_contents(const char* filepath)
         length = ftell(f);
         fseek(f, 0, SEEK_SET);
 
-        buffer = calloc(length, length);
+        buffer = calloc(length, sizeof(char));
 
         if (buffer)
-            fread(buffer, 1, length, f);
+            fread(buffer, sizeof(char), length, f);
 
         fclose(f);
         return buffer;
