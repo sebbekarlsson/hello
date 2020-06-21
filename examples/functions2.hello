@@ -5,3 +5,11 @@ function dosomething(x, y)
 };
 
 dosomething("hello", "world");
+
+
+function sayyourname(name)
+{
+    print(name);
+};
+
+sayyourname("john doe");
