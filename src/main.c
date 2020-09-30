@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     else {
         char input[MAX_LIMIT];
         while(1){
-            printf(">>> ");
+            printf("Welcome to the hello language v. 0.0.1!\nCreated by sebbekarlsson\n>>> ");
             fgets(input,MAX_LIMIT, stdin);
             lexer_T* lexer = init_lexer(input);
             parser_T* parser = init_parser(lexer);
