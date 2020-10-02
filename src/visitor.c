@@ -20,6 +20,38 @@ static AST_T* builtin_function_print(visitor_T* visitor, AST_T** args, int args_
     return init_ast(AST_NOOP);
 }
 
+static AST_T* builtin_function_exit(visitor_T* visitor, AST_T** args, int args_size)
+{
+    for (int i = 0; i < args_size; i++)
+    {
+        AST_T* visited_ast = visitor_visit(visitor, args[i]);
+
+        switch (visited_ast->type)
+        {
+            case AST_NOOP: printf("You exited\n"); exit(0); break;
+            default: printf("%p\n", visited_ast); break;
+        }
+    }
+
+    return init_ast(AST_NOOP);
+}
+
+static AST_T* builtin_function_clear(visitor_T* visitor, AST_T** args, int args_size)
+{
+    for (int i = 0; i < args_size; i++)
+    {
+        AST_T* visited_ast = visitor_visit(visitor, args[i]);
+
+        switch (visited_ast->type)
+        {
+            case AST_NOOP: system("clear"); break;
+            default: printf("%p\n", visited_ast); break;
+        }
+    }
+
+    return init_ast(AST_NOOP);
+}
+
 visitor_T* init_visitor()
 {
     visitor_T* visitor = calloc(1, sizeof(struct VISITOR_STRUCT));
@@ -85,6 +117,16 @@ AST_T* visitor_visit_function_call(visitor_T* visitor, AST_T* node)
     if (strcmp(node->function_call_name, "print") == 0)
     {
         return builtin_function_print(visitor, node->function_call_arguments, node->function_call_arguments_size);
+    }
+
+    if (strcmp(node->function_call_name, "exit") == 0)
+    {
+        return builtin_function_exit(visitor, node->function_call_arguments, node->function_call_arguments_size);
+    }
+
+    if (strcmp(node->function_call_name, "clear") == 0)
+    {
+        return builtin_function_clear(visitor, node->function_call_arguments, node->function_call_arguments_size);
     }
 
     AST_T* fdef = scope_get_function_definition(
